@@ -1,0 +1,9 @@
+.mypy_cache
+.pytest_cache
+.vscode
+htmlcov
+*.egg-info
+.coverage
+.python-version
+__pycache__
+build
