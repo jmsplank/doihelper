@@ -30,7 +30,7 @@ AuthorSurname_Year_Title_Of_Paper.pdf
 ## Installation
 
 ```shell
-$ git clone git@github.com:jmsplank/paper_titles.git
+$ git clone git@github.com:jmsplank/paper-title.git
 $ cd paper_titles
 $ pip install .
 ```
