@@ -49,7 +49,27 @@ def request_doi_json(url: str) -> DOI:
 
     return DOI(
         title=res["title"],
-        first_author=res["author"][0]["family"],
+        authors=[res["author"][i]["family"] for i in range(len(res["author"]))],
         year=str(res["issued"]["date-parts"][0][0]),
         url=res["URL"],
     )
+
+
+def request_text_citation(url: str) -> str:
+    headers = {"Accept": "text/x-bibliography"}
+    res = requests.get(url, headers=headers)
+    return res.text
+
+
+def get_doi(doi: str) -> DOI:
+    """Get a DOI from a URL or a doi.
+
+    Args:
+        doi (str): the doi, http://doi.org/ part is optional
+
+    Returns:
+        DOI: DOI object
+    """
+    url = get_doi_url(doi)
+    data = request_doi_json(url)
+    return data

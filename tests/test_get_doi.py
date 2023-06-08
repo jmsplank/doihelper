@@ -1,7 +1,7 @@
 import pytest
 
-from paper_title.doi import DOI
-from paper_title.get_doi import get_doi_url, request_doi_json
+from doihelper.doi import DOI
+from doihelper.get_doi import get_doi_url, request_doi_json
 
 
 @pytest.mark.parametrize(
