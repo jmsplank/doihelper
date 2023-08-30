@@ -2,32 +2,19 @@
 import typer
 
 from .doi import DOI
-from .get_doi import get_doi_url, request_doi_json, request_text_citation
-
-
-def main(doi: str) -> DOI:
-    """Command line script.
-
-    Args:
-        doi (str): The DOI to process.
-    """
-    url = get_doi_url(doi)
-    doi_data = request_doi_json(url)
-    # print(doi_data.pdf_title)
-    return doi_data
+from .get_doi import get_doi, get_text_citation
 
 
 def pdf(d):
-    print(main(d).pdf_title)
+    print(get_doi(d).pdf_title)
 
 
 def citation(d):
-    print(main(d).citation)
+    print(get_doi(d).citation)
 
 
 def formatted(doi):
-    url = get_doi_url(doi)
-    text = request_text_citation(url)
+    text = get_text_citation(doi)
     print(text)
 
 

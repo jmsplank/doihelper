@@ -1,3 +1,4 @@
+"""Setup."""
 from setuptools import find_packages, setup
 
 with open("requirements.txt", "r") as file:
@@ -10,9 +11,9 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "paperpdf = paper_title.cli:paperpdf",
-            "papercitation = paper_title.cli:papercitation",
-            "paperformatted = paper_title.cli:paperformatted",
+            "paperpdf = doihelper.cli:paperpdf",
+            "papercitation = doihelper.cli:papercitation",
+            "paperformatted = doihelper.cli:paperformatted",
         ]
     },
 )

@@ -6,59 +6,75 @@ import requests
 
 from .doi import DOI
 
-DOI_BASE = "https://doi.org/"
 
+class DOI_URL:
+    """Use to convert a raw_input to a queryable url.
 
-def get_doi_url(url: str, DOI_BASE: str = DOI_BASE) -> str:
-    """Make sure URL is valid.
-
-    Args:
-        url (str): URL to process.
-        DOI_BASE (str, optional): Base URL for DOI. Defaults to DOI_BASE.
-
-    Returns:
-        str: Valid URL.
+    Attributes:
+        DOI_BASE (str): Base URL for the doi database
     """
-    url = url.strip()
 
-    url = sub(r"^.*doi.org\/", DOI_BASE, url)
+    DOI_BASE = "https://doi.org/"
 
-    if not url.startswith(DOI_BASE):
-        url = urljoin(DOI_BASE, url)
+    def __init__(self, raw_input: str) -> None:
+        """Initalise DOI_URL with an unsanitised input.
 
-    return url
+        Args:
+            raw_input (str): Unsanitised raw user input.
+        """
+        self._raw_input = raw_input
+        self.url = self._get_doi_url()
 
+    def _get_doi_url(self) -> str:
+        """Validate and correct the _raw_input instance attr."""
+        url = self._raw_input.strip()
 
-def request_doi_json(url: str) -> DOI:
-    """Make a request to DOI API for metadata in JSON format.
+        url = sub(r"^.*doi.org\/", self.DOI_BASE, url)
 
-    Note:
-        Schema is defined at:
-            https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
-        Header difinitions at:
-            https://citation.crosscite.org/docs.html
+        if not url.startswith(self.DOI_BASE):
+            url = urljoin(self.DOI_BASE, url)
 
-    Args:
-        url (str): The URL of the paper.
+        return url
 
-    Returns:
-        DOI: A DOI object.
-    """
-    headers = {"Accept": "application/vnd.citationstyles.csl+json"}
-    res = requests.get(url, headers=headers).json()
+    def json(self) -> DOI:
+        """Make a request to DOI API for metadata in JSON format.
 
-    return DOI(
-        title=res["title"],
-        authors=[res["author"][i]["family"] for i in range(len(res["author"]))],
-        year=str(res["issued"]["date-parts"][0][0]),
-        url=res["URL"],
-    )
+        Note:
+            Schema is defined at:
+                https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
+            Header difinitions at:
+                https://citation.crosscite.org/docs.html
 
+        Args:
+            url (str): The URL of the paper.
 
-def request_text_citation(url: str) -> str:
-    headers = {"Accept": "text/x-bibliography"}
-    res = requests.get(url, headers=headers)
-    return res.text
+        Returns:
+            DOI: A DOI object.
+        """
+        headers = {"Accept": "application/vnd.citationstyles.csl+json"}
+        res = requests.get(self.url, headers=headers).json()
+
+        return DOI(
+            title=res["title"],
+            authors=[res["author"][i]["family"] for i in range(len(res["author"]))],
+            year=str(res["issued"]["date-parts"][0][0]),
+            url=res["URL"],
+        )
+
+    def text(self) -> str:
+        """Use a text/x-bibliography header to get a plain text citation.
+
+        Returns:
+            str: APA formatted unicode citation
+        """
+        headers = {"Accept": "text/x-bibliography"}
+        res = requests.get(self.url, headers=headers)
+        # Force set response encoding to utf-8
+        # This is based of CSL docs using only utf-8
+        # https://docs.citationstyles.org/en/stable/search.html?q=encoding&check_keywords=yes&area=default
+        res.encoding = "utf-8"
+
+        return res.text  # All python strings are unicode so this should work
 
 
 def get_doi(doi: str) -> DOI:
@@ -70,6 +86,18 @@ def get_doi(doi: str) -> DOI:
     Returns:
         DOI: DOI object
     """
-    url = get_doi_url(doi)
-    data = request_doi_json(url)
-    return data
+    url = DOI_URL(doi)
+    return url.json()
+
+
+def get_text_citation(doi: str) -> str:
+    """Get a citation from a url or doi.
+
+    Args:
+        doi (str): the doi, http://doi.org/ part is optional
+
+    Returns:
+        str: An APA style citation in unicode
+    """
+    url = DOI_URL(doi)
+    return url.text()
