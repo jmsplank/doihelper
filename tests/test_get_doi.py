@@ -27,5 +27,11 @@ def test_json():
 def test_text():
     link = "10.1029/2022GL099544"
     text = DOI_URL(link).text()
-    expected_text = """Ng, J., Chen, L. â\x80\x90J., Bessho, N., Shuster, J., Burkholder, B., & Yoo, J. (2022). Electronâ\x80\x90Scale Reconnection in Threeâ\x80\x90Dimensional Shock Turbulence. Geophysical Research Letters, 49(15). Portico. https://doi.org/10.1029/2022gl099544\n"""
+    expected_text = (
+        "Ng, J., Chen, L. â\x80\x90J., Bessho, N., Shuster, J., Burkholder, B., "
+        "& Yoo, J. (2022). Electronâ\x80\x90Scale Reconnection in Threeâ\x80\x90"
+        "Dimensional Shock Turbulence. Geophysical Research Letters, 49(15). "
+        "Portico. "
+        "https://doi.org/10.1029/2022gl099544\n"
+    )
     assert text == expected_text
