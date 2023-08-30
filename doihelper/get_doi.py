@@ -15,6 +15,7 @@ class DOI_URL:
     """
 
     DOI_BASE = "https://doi.org/"
+    headers: dict[str, str] = {"Accept": "application/vnd.citationstyles.csl+json"}
 
     def __init__(self, raw_input: str) -> None:
         """Initalise DOI_URL with an unsanitised input.
@@ -36,24 +37,20 @@ class DOI_URL:
 
         return url
 
-    def json(self) -> DOI:
-        """Make a request to DOI API for metadata in JSON format.
-
+    def request(self) -> requests.Response:
+        """Request doi information.
+        
         Note:
             Schema is defined at:
                 https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
             Header difinitions at:
                 https://citation.crosscite.org/docs.html
-
-        Args:
-            url (str): The URL of the paper.
-
-        Returns:
-            DOI: A DOI object.
         """
-        headers = {"Accept": "application/vnd.citationstyles.csl+json"}
-        res = requests.get(self.url, headers=headers).json()
+        res = requests.get(self.url, headers=self.headers)
+        return res
 
+    def json(self) -> DOI:
+        res = self.request().json()
         return DOI(
             title=res["title"],
             authors=[res["author"][i]["family"] for i in range(len(res["author"]))],
