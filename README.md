@@ -10,14 +10,28 @@ Get a formatted pdf filename for a paper specified by a DOI.
 
 ## Usage
 
+### Title for .pdf file
+
 ```shell
-$ paper-title https://doi.org/10.1038/nature05116
+$ papertitle https://doi.org/10.1038/nature05116
+
 Drake_2006_Electron_Acceleration_From_Contracting_Magnetic_Islands_During_Reconnection.pdf
 ```
 
-The format is:
-```txt
-AuthorSurname_Year_Title_Of_Paper.pdf
+The format is: `AuthorSurname_Year_Title_Of_Paper.pdf`
+
+### Short citation
+```shell
+$ papercitation https://doi.org/10.1038/nature05116
+
+Drake et al - 2006 - Electron acceleration from contracting magnetic islands during reconnection
+```
+
+### Full APA style formatted citation
+```shell
+$ paperformatted https://doi.org/10.1038/nature05116
+
+Drake, J. F., Swisdak, M., Che, H., & Shay, M. A. (2006). Electron acceleration from contracting magnetic islands during reconnection. Nature, 443(7111), 553–556. https://doi.org/10.1038/nature05116
 ```
 
 ## Requirements

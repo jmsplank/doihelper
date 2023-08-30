@@ -39,7 +39,7 @@ class DOI_URL:
 
     def request(self) -> requests.Response:
         """Request doi information.
-        
+
         Note:
             Schema is defined at:
                 https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
