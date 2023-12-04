@@ -9,8 +9,13 @@ def pdf(d):
     print(get_doi(d).pdf_title)
 
 
-def citation(d):
-    print(get_doi(d).citation)
+def citation(doi, style: str = "default"):
+    """Create an in-text citation in a specific --style.
+
+    doi: the DOI, with or without the preceding `https://` and/or `doi.org/`
+    --style (str, optional): The style, can be `default` or `APA`.
+    """
+    print(get_doi(doi).citation(cite_type=style))
 
 
 def formatted(doi):
