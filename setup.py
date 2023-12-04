@@ -1,5 +1,5 @@
 """Setup."""
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup  # type: ignore
 
 with open("requirements.txt", "r") as file:
     requirements = [line.strip() for line in file.readlines()]
