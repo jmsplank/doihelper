@@ -18,6 +18,7 @@ class DOI:
     authors: list[str]
     year: str
     url: str
+    doi: str
 
     @staticmethod
     def remove_illegal_chars(s: str, sub_illegal: str = "") -> str:
@@ -52,22 +53,37 @@ class DOI:
             str: Formatted string
         """
         num_authors = len(self.authors)
+        comma_authors = [author.replace(" ", ", ") for author in self.authors]
 
         if num_authors > 2:
-            return f"{self.authors[0]} et al."
+            return f"{comma_authors[0]}, et al."
         else:
-            return " and ".join(self.authors[:2])
+            return ", and ".join(self.authors[:2])
 
-    @property
-    def citation(self) -> str:
+    def citation(self, cite_type: str = "APA") -> str:
         """Text friendly citation of article.
+
+        Args:
+        cite_type (str): Citation type. One of 'default', 'APA',
 
         Returns:
             str: Single line citation
         """
-        return self.remove_illegal_chars(
-            f"{self.fmt_authors()} - {self.year} - {self.title}", sub_illegal=""
-        )
+        citation: str = ""
+        match cite_type:
+            case "default":
+                citation = self.remove_illegal_chars(
+                    f"{self.fmt_authors()} - {self.year} - {self.title}"
+                )
+            case "APA":
+                # authors = self.fmt_authors().replace(" ", ", ")
+                citation = (
+                    f"{self.fmt_authors()}, ({self.year}), {self.title}, {self.doi}"
+                )
+            case _:
+                raise ValueError(f"cite_type of {cite_type} not recognised")
+
+        return citation
 
     @property
     def first_author(self) -> str:

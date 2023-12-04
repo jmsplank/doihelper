@@ -56,6 +56,7 @@ class DOI_URL:
             authors=[res["author"][i]["family"] for i in range(len(res["author"]))],
             year=str(res["issued"]["date-parts"][0][0]),
             url=res["URL"],
+            doi=self.url,
         )
 
     def text(self) -> str:
