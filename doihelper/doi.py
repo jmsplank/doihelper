@@ -1,4 +1,5 @@
 """DOI object."""
+import unicodedata
 from dataclasses import dataclass
 from re import sub
 
@@ -24,6 +25,26 @@ class DOI:
     def remove_illegal_chars(s: str, sub_illegal: str = "") -> str:
         out = sub(r"[^\w\s\-\u2010]+", sub_illegal, s)
         return out
+
+    @staticmethod
+    def normalise_accents(s: str) -> str:
+        """Remove accent characters
+
+        Note:
+            - https://stackoverflow.com/a/44433664
+            - https://stackoverflow.com/a/15987386
+
+        Args:
+            s (str): input string e.g. àéêöhello!
+
+        Returns:
+            str: input string with accents replaced e.g. aeeohello
+        """
+        normalised = unicodedata.normalize("NFD", s)  # Accent insensitive format
+        # Ascii has no accents so encode in that fmt to remove them then decode back to
+        # utf-8
+        accent_stripped = str(normalised.encode("ascii", "ignore").decode("utf-8"))
+        return accent_stripped
 
     @staticmethod
     def parse_field(field: str):
@@ -96,11 +117,12 @@ class DOI:
 
     @property
     def pdf_title(self) -> str:
-        """Preoperty to return the PDF title.
+        """Property to return the PDF title.
 
         Returns:
             str: The PDF title.
         """
-        return (
+        title_str = (
             f'{self.parse_field(f"{self.first_author}_{self.year}_{self.title}")}.pdf'
         )
+        return self.normalise_accents(title_str)
